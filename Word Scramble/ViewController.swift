@@ -8,15 +8,17 @@
 import UIKit
 
 class ViewController: UITableViewController {
-    var allWords = [String]()
-    var usedWords = [String]()
+    var allWords = [String]()   //holds all the words in the file
+    var usedWords = [String]()  //holds all the valid words from user I/P
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Loaded")
+//        print("Loaded")
         
+        //display the plus button on right top corner
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
         
+        //fetch the words from file and feed it to the allWords array
         if let startWordsURL = Bundle.main.url(forResource: "words", withExtension: ".txt") {
             if let startWords = try? String(contentsOf: startWordsURL) {
                 allWords = startWords.components(separatedBy: "\n")
@@ -30,18 +32,20 @@ class ViewController: UITableViewController {
 }
 
 extension ViewController {
+    //give the title to nav cont. and make sure tableview is empty
     func startGame() {
         title = allWords.randomElement()
         usedWords.removeAll(keepingCapacity: true)
         tableView.reloadData()
     }
     
+    //brings up popup to take user I/P
     @objc func promptForAnswer() {
         let ac = UIAlertController(title: "Enter word", message: nil, preferredStyle: .alert)
         ac.addTextField()
         
         let submitAction = UIAlertAction(title: "Submit", style: .default) { [weak self, weak ac] action in
-            guard let answer = ac?.textFields?[0].text else {return}
+            guard let answer = ac?.textFields?[0].text else {return}    //this answer propert is used further to check the validity of word
             self?.submit(answer)
         }
         ac.addAction(submitAction)
@@ -81,6 +85,7 @@ extension ViewController {
         present(ac, animated: true)
     }
     
+    //check if the I/P word can be made up from word
     func isPossible(word: String) -> Bool{
         guard var tempWord = title?.lowercased() else {return false}
         
@@ -94,10 +99,12 @@ extension ViewController {
         return true
     }
     
+    //checks that I/P word should be repeated
     func isOriginal(word: String) -> Bool {
         return !usedWords.contains(word)
     }
     
+    //checks the I/P word with dictionary (objC)
     func isReal(word: String) -> Bool {
         let checker = UITextChecker()
         let range = NSRange(location: 0, length: word.utf16.count)
