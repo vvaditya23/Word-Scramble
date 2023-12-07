@@ -18,6 +18,9 @@ class ViewController: UITableViewController {
         //display the plus button on right top corner
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
         
+        //display the restart button on left top corner
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(startGame))
+        
         //fetch the words from file and feed it to the allWords array
         if let startWordsURL = Bundle.main.url(forResource: "words", withExtension: ".txt") {
             if let startWords = try? String(contentsOf: startWordsURL) {
@@ -33,7 +36,7 @@ class ViewController: UITableViewController {
 
 extension ViewController {
     //give the title to nav cont. and make sure tableview is empty
-    func startGame() {
+    @objc func startGame() {
         title = allWords.randomElement()
         usedWords.removeAll(keepingCapacity: true)
         tableView.reloadData()
